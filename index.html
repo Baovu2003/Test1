@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="calculator">
+            <h1>Javascript <br> <span>Age Calculator</span></h1>
+            <div class="input-box">
+                <input type="date" id="date">
+                <button onclick="calculateAge()">Calculate</button>
+            </div>
+            <div id="result"></div>
+        </div>
+    </div>
+    <script>
+        let userInput = document.getElementById("date");
+        userInput.max = new Date().toISOString().split("T")[0];
+
+        function calculateAge() {
+            let birthDate = new Date(userInput.value);
+            let today = new Date();
+
+            if (birthDate > today) {
+                document.getElementById("result").innerHTML = "Invalid birth date.";
+                return;
+            }
+
+            let d1 = birthDate.getDate();
+            let m1 = birthDate.getMonth() + 1;
+            let y1 = birthDate.getFullYear();
+
+            let d2 = today.getDate();
+            let m2 = today.getMonth() + 1;
+            let y2 = today.getFullYear();
+
+            let d3, m3, y3;
+
+            // Calculate year difference
+            y3 = y2 - y1;
+
+            // Calculate month difference
+            if (m2 >= m1) {
+                m3 = m2 - m1;
+            } else {
+                y3--;
+                m3 = 12 + m2 - m1;
+            }
+
+            // Calculate day difference
+            if (d2 >= d1) {
+                // Nếu ngày hiện tại (d2) lớn hơn hoặc bằng ngày sinh (d1)
+                // thì số ngày chênh lệch (d3) chỉ đơn giản là hiệu số giữa ngày hiện tại và ngày sinh.
+                d3 = d2 - d1;
+            } else {
+                // Nếu ngày hiện tại (d2) nhỏ hơn ngày sinh (d1),
+                // cần phải mượn thêm ngày từ tháng trước để tính toán số ngày chính xác.
+
+                if (m3 > 0) {
+                    // Nếu còn đủ tháng để mượn (nghĩa là số tháng chênh lệch (m3) lớn hơn 0),
+                    // giảm đi 1 tháng từ m3.
+                    m3--;
+                } else {
+                    // Nếu không còn tháng để mượn (m3 bằng 0),
+                    // cần phải mượn thêm từ năm trước (giảm đi 1 năm) và thiết lập lại m3 thành 11 (tương đương với tháng 12).
+                    y3--;
+                    m3 = 11;
+                }
+
+                // Bây giờ, cần tính toán lại số ngày chênh lệch (d3).
+                // new Date(y2, m2 - 1, 0).getDate() sẽ trả về số ngày của tháng trước đó (tháng m2 - 1).
+                // Ta cộng thêm số ngày hiện tại (d2) và trừ đi số ngày sinh (d1).
+                // Điều này tương đương với việc cộng thêm số ngày từ tháng trước vào ngày hiện tại.
+                d3 = new Date(y2, m2 - 1, 0).getDate() + d2 - d1;
+            }
+
+
+            document.getElementById("result").innerHTML = `Your age is ${y3} years, ${m3} months, and ${d3} days.`;
+        }
+    </script>
+</body>
+
+</html>
